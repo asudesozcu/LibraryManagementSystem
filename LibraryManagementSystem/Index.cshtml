@@ -1,0 +1,61 @@
+﻿@page
+@model LibraryManagementSystem.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "Pages/Books";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Book[0].Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Book[0].Author)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Book[0].Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Book[0].PublicationYear)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Book[0].IsAvailable)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Book) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Author)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PublicationYear)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsAvailable)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.BookId">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.BookId">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.BookId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -1,0 +1,42 @@
+﻿@page
+@model LibraryManagementSystem.Pages.Users.DetailsModel
+
+<h1>User Details</h1>
+
+<div>
+    <h4>User</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            First Name
+        </dt>
+        <dd class="col-sm-10">
+            @Model.User.FirstName
+        </dd>
+        <dt class="col-sm-2">
+            Last Name
+        </dt>
+        <dd class="col-sm-10">
+            @Model.User.LastName
+        </dd>
+        <dt class="col-sm-2">
+            Email
+        </dt>
+        <dd class="col-sm-10">
+            @Model.User.Email
+        </dd>
+        <dt class="col-sm-2">
+            Role
+        </dt>
+        <dd class="col-sm-10">
+            @Model.User.Role
+        </dd>
+        <dt class="col-sm-2">
+            Is Active
+        </dt>
+        <dd class="col-sm-10">
+            @Model.User.IsActive
+        </dd>
+    </dl>
+</div>
+<a asp-page="./Index" class="btn btn-secondary">Back to List</a>

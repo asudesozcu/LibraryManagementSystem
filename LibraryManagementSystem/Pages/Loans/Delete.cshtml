@@ -1,0 +1,47 @@
+﻿@page
+@model LibraryManagementSystem.Pages.Loans.DeleteModel
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "Pages/Books";
+}
+
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Loan</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Loan.book)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Loan.book.Author)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Loan.user)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Loan.user.Email)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Loan.LoanDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Loan.LoanDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Loan.ReturnDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Loan.ReturnDate)
+        </dd>
+    </dl>
+    
+    <form method="post">
+        <input type="hidden" asp-for="Loan.LoanId" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-page="./Index">Back to List</a>
+    </form>
+</div>

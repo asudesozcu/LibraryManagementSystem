@@ -1,0 +1,43 @@
+﻿@page
+@model LibraryManagementSystem.Pages.Books.IndexModel
+
+
+<h1>Books</h1>
+
+<form method="get">
+    <div class="form-group">
+        <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control" placeholder="Search by title or author..." />
+        <button type="submit" class="btn btn-primary mt-2">Search</button>
+    </div>
+</form>
+
+<table class="table">
+<thead>
+    <tr>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Publication Year</th>
+        <th>Category</th>
+        <th>Available</th>
+        <th>Actions</th>
+    </tr>
+</thead>
+<tbody>
+    @foreach (var book in Model.Books)
+    {
+        <tr>
+            <td>@book.Title</td>
+            <td>@book.Author</td>
+            <td>@book.PublicationYear</td>
+            <td>@book.Category?.Name</td>
+            <td>@book.IsAvailable</td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@book.BookId" class="btn btn-warning">Edit</a>
+                <a asp-page="./Details" asp-route-id="@book.BookId" class="btn btn-info">Details</a>
+                <a asp-page="./Delete" asp-route-id="@book.BookId" class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
+    }
+</tbody>
+</table>
+<a asp-page="./Create" class="btn btn-primary mt-3">Add New Book</a>

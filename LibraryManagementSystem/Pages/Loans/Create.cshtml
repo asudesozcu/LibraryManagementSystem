@@ -1,0 +1,42 @@
+﻿@page
+@model LibraryManagementSystem.Pages.Loans.CreateModel
+
+<h1>Create Loan</h1>
+
+<form method="post">
+    <div class="form-group">
+        <label asp-for="Loan.userId"></label>
+        <select asp-for="Loan.userId" class="form-control" asp-items="Model.Users"></select>
+        <span asp-validation-for="Loan.userId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Loan.BookId"></label>
+        <select asp-for="Loan.BookId" class="form-control" asp-items="Model.Books"></select>
+        <span asp-validation-for="Loan.BookId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Loan.LoanDate"></label>
+        <input asp-for="Loan.LoanDate" class="form-control" />
+        <span asp-validation-for="Loan.LoanDate" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Loan.ReturnDate"></label>
+        <input asp-for="Loan.ReturnDate" class="form-control" />
+        <span asp-validation-for="Loan.ReturnDate" class="text-danger"></span>
+    </div>
+
+    <div class="form-check">
+        <input asp-for="Loan.IsReturned" class="form-check-input" />
+        <label asp-for="Loan.IsReturned" class="form-check-label"></label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-page="./Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

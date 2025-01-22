@@ -1,0 +1,25 @@
+﻿@page
+@model LibraryManagementSystem.Pages.Books.DeleteModel
+
+
+
+<h1>Delete</h1>
+
+h4>Are you sure you want to delete this book?</h4>
+<div>
+    <h4>@Model.Book.Title</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Author</dt>
+        <dd class="col-sm-10">@Model.Book.Author</dd>
+
+        <dt class="col-sm-2">Publication Year</dt>
+        <dd class="col-sm-10">@Model.Book.PublicationYear</dd>
+    </dl>
+</div>
+
+<form method="post">
+    <input type="hidden" asp-for="Book.BookId" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-page="./Index" class="btn btn-secondary">Cancel</a>
+</form>

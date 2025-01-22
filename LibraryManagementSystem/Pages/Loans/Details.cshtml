@@ -1,0 +1,44 @@
+﻿@page
+@model LibraryManagementSystem.Pages.Loans.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "Pages/Books";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Loan</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Loan.book)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Loan.book.Author)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Loan.user)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Loan.user.Email)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Loan.LoanDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Loan.LoanDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Loan.ReturnDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Loan.ReturnDate)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.Loan.LoanId">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>

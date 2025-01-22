@@ -1,0 +1,49 @@
+﻿@page
+@model LibraryManagementSystem.Pages.Books.CreateModel
+
+
+
+<h1>Create a New Book</h1>
+
+<form method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="Book.Title" class="control-label"></label>
+        <input asp-for="Book.Title" class="form-control" />
+        <span asp-validation-for="Book.Title" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Book.Author" class="control-label"></label>
+        <input asp-for="Book.Author" class="form-control" />
+        <span asp-validation-for="Book.Author" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Book.CategoryId" class="control-label"></label>
+        <select asp-for="Book.CategoryId" class="form-control" asp-items="Model.Categories"></select>
+        <span asp-validation-for="Book.CategoryId" class="text-danger"></span>
+
+
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Book.PublicationYear" class="control-label"></label>
+        <input asp-for="Book.PublicationYear" class="form-control" type="number" />
+        <span asp-validation-for="Book.PublicationYear" class="text-danger"></span>
+
+    </div>
+
+    <div class="form-group form-check">
+        <input class="form-check-input" asp-for="Book.IsAvailable" />
+        <label class="form-check-label" asp-for="Book.IsAvailable"></label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-page="./Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

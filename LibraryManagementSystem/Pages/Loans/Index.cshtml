@@ -1,0 +1,30 @@
+﻿@page
+@model LibraryManagementSystem.Pages.Loans.IndexModel
+
+<h1>Loan Records</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Loan ID</th>
+            <th>User</th>
+            <th>Book</th>
+            <th>Loan Date</th>
+            <th>Return Date</th>
+            <th>Is Returned</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var loan in Model.Loans)
+        {
+            <tr>
+                <td>@loan.LoanId</td>
+                <td>@loan.user.FirstName @loan.user.LastName</td>
+                <td>@loan.book.Title</td>
+                <td>@loan.LoanDate.ToString("yyyy-MM-dd")</td>
+                <td>@loan.ReturnDate?.ToString("yyyy-MM-dd")</td>
+                <td>@loan.IsReturned</td>
+            </tr>
+        }
+    </tbody>
+</table>
