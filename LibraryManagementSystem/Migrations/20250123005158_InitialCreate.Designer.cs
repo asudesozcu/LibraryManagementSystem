@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryManagementSystem.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    [Migration("20250121173440_UpdateUserModel")]
-    partial class UpdateUserModel
+    [Migration("20250123005158_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -111,10 +111,13 @@ namespace LibraryManagementSystem.Migrations
                     b.Property<int>("BookId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsReturned")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("LoanDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("ReturnDate")
+                    b.Property<DateTime?>("ReturnDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("userId")
@@ -186,15 +189,15 @@ namespace LibraryManagementSystem.Migrations
             modelBuilder.Entity("LibraryManagementSystem.Models.Loan", b =>
                 {
                     b.HasOne("LibraryManagementSystem.Models.Book", "book")
-                        .WithMany()
+                        .WithMany("Loans")
                         .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("LibraryManagementSystem.Models.User", "user")
-                        .WithMany()
+                        .WithMany("Loans")
                         .HasForeignKey("userId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("book");
@@ -202,9 +205,19 @@ namespace LibraryManagementSystem.Migrations
                     b.Navigation("user");
                 });
 
+            modelBuilder.Entity("LibraryManagementSystem.Models.Book", b =>
+                {
+                    b.Navigation("Loans");
+                });
+
             modelBuilder.Entity("LibraryManagementSystem.Models.Category", b =>
                 {
                     b.Navigation("Books");
+                });
+
+            modelBuilder.Entity("LibraryManagementSystem.Models.User", b =>
+                {
+                    b.Navigation("Loans");
                 });
 #pragma warning restore 612, 618
         }

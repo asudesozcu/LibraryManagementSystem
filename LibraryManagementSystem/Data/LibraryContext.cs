@@ -40,15 +40,18 @@ namespace LibraryManagementSystem.Data
             // Configure relationships for Loan
             modelBuilder.Entity<Loan>()
                 .HasOne(l => l.user)
-                .WithMany()
+                .WithMany(u => u.Loans) // Allow User to have multiple Loans
                 .HasForeignKey(l => l.userId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict); // Prevent cascading delete
 
             modelBuilder.Entity<Loan>()
                 .HasOne(l => l.book)
-                .WithMany()
+                .WithMany(b => b.Loans) // Allow Book to have multiple Loans
                 .HasForeignKey(l => l.BookId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict); // Prevent cascading delete
+
+            
+
         }
     }
 }
