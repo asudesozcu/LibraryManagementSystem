@@ -26,6 +26,6 @@ namespace LibraryManagementSystem.Models
 
         public bool IsAvailable { get; set; } = true;
 
-
+        public ICollection<Loan> Loans { get; set; } = new List<Loan>();
     }
 }

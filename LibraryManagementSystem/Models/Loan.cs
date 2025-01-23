@@ -11,6 +11,7 @@ namespace LibraryManagementSystem.Models
         public int LoanId { get; set; }
 
         [Required]
+       
         public int userId { get; set; }
         [ForeignKey(nameof(userId))]
 

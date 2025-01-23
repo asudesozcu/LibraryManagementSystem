@@ -28,7 +28,8 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<LibraryContext>();
-    AddAdminUser(context);
+    context.Database.Migrate(); // Apply migrations
+
 }
 
 // Configure the HTTP request pipeline
@@ -46,6 +47,8 @@ app.UseRouting();
 // Add session and authentication middleware
 app.UseAuthentication();
 app.UseAuthorization();
+app.MapRazorPages();
+
 app.UseSession();
 
 // Custom middleware for login redirection
@@ -54,7 +57,6 @@ app.Use(async (context, next) =>
     var path = context.Request.Path;
     var isAuthenticated = context.User.Identity?.IsAuthenticated ?? false;
 
-    // Redirect to login if unauthenticated and not accessing login or register pages
     if (!isAuthenticated && !path.StartsWithSegments("/Users/Login") && !path.StartsWithSegments("/Users/Register"))
     {
         context.Response.Redirect("/Users/Login");
@@ -65,47 +67,10 @@ app.Use(async (context, next) =>
 });
 
 // Map Razor Pages
-app.MapRazorPages();
 
 // Set login page as the default route
-app.MapGet("/", context =>
-{
-    context.Response.Redirect("/Users/Login");
-    return Task.CompletedTask;
-});
+
 
 app.Run();
 
-void AddAdminUser(LibraryContext context)
-{
-    var adminUser = new User
-    {
-        FirstName = "Admin",
-        LastName = "User",
-        Email = "admin@example.com",
-        Password = HashPassword("Admin@123"), // Hash the password here
-        Role = "Admin",
-        IsActive = true,
-        CreatedDate = DateTime.UtcNow
-    };
-
-    if (!context.Users.Any(u => u.Email == adminUser.Email))
-    {
-        context.Users.Add(adminUser);
-        context.SaveChanges();
-        Console.WriteLine("Admin user created successfully.");
-    }
-    else
-    {
-        Console.WriteLine("Admin user already exists.");
-    }
-}
-
-// Password hashing method
-string HashPassword(string password)
-{
-    using var sha256 = SHA256.Create();
-    var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-    return Convert.ToBase64String(bytes);
-}
 
