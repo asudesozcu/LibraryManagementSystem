@@ -78,7 +78,13 @@ namespace LibraryManagementSystem.Pages.Users
                 return RedirectToPage("/Books/Index");
             }
 
-            return RedirectToPage("/Loan/Index");
+            if (user.Role == "User")
+            {
+                _logger.LogInformation("Redirecting user to Loans page");
+                return RedirectToPage("/Loans/Index"); // Loans klasöründeki Index.cshtml'e yönlendir
+            }
+
+            return Page();
         }
 
         // Password hashing method

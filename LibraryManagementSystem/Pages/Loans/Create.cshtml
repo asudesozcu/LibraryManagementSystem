@@ -1,42 +1,24 @@
 ﻿@page
 @model LibraryManagementSystem.Pages.Loans.CreateModel
 
-<h1>Create Loan</h1>
+<h1>Ödünç Kitap Al</h1>
 
 <form method="post">
-    <div class="form-group">
-        <label asp-for="Loan.userId"></label>
-        <select asp-for="Loan.userId" class="form-control" asp-items="Model.Users"></select>
-        <span asp-validation-for="Loan.userId" class="text-danger"></span>
-    </div>
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
     <div class="form-group">
-        <label asp-for="Loan.BookId"></label>
-        <select asp-for="Loan.BookId" class="form-control" asp-items="Model.Books"></select>
+        <label asp-for="Loan.BookId" class="control-label">Kitap Seç</label>
+        <select asp-for="Loan.BookId" class="form-control" asp-items="@(new SelectList(Model.AvailableBooks, "BookId", "Title"))">
+            <option value="">Kitap Seçin</option>
+        </select>
         <span asp-validation-for="Loan.BookId" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Loan.LoanDate"></label>
-        <input asp-for="Loan.LoanDate" class="form-control" />
-        <span asp-validation-for="Loan.LoanDate" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Loan.ReturnDate"></label>
-        <input asp-for="Loan.ReturnDate" class="form-control" />
+        <label asp-for="Loan.ReturnDate" class="control-label">İade Tarihi (Opsiyonel)</label>
+        <input asp-for="Loan.ReturnDate" class="form-control" type="date" />
         <span asp-validation-for="Loan.ReturnDate" class="text-danger"></span>
     </div>
 
-    <div class="form-check">
-        <input asp-for="Loan.IsReturned" class="form-check-input" />
-        <label asp-for="Loan.IsReturned" class="form-check-label"></label>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Save</button>
-    <a asp-page="./Index" class="btn btn-secondary">Cancel</a>
+    <button type="submit" class="btn btn-primary">Kitabı Ödünç Al</button>
 </form>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}

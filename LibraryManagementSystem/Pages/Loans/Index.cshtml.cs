@@ -1,7 +1,10 @@
 ﻿using LibraryManagementSystem.Data;
 using LibraryManagementSystem.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace LibraryManagementSystem.Pages.Loans
 {
@@ -16,12 +19,17 @@ namespace LibraryManagementSystem.Pages.Loans
 
         public List<Loan> Loans { get; set; }
 
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
             Loans = await _context.Loans
-                .Include(l => l.user)
                 .Include(l => l.book)
+                .Include(l => l.user)
                 .ToListAsync();
+
+            return Page();
         }
     }
 }
+
+ 
+

@@ -2,7 +2,7 @@
 using LibraryManagementSystem.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace LibraryManagementSystem.Pages.Loans
 {
@@ -18,28 +18,60 @@ namespace LibraryManagementSystem.Pages.Loans
         [BindProperty]
         public Loan Loan { get; set; }
 
-        public SelectList Users { get; set; }
-        public SelectList Books { get; set; }
+        public List<Book> AvailableBooks { get; set; }
 
-        public void OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
-            Users = new SelectList(_context.Users, "UserId", "Email");
-            Books = new SelectList(_context.Books, "BookId", "Title");
+            // Sadece ödünç alınabilir kitapları göster
+            AvailableBooks = await _context.Books
+                .Where(b => b.IsAvailable)
+                .ToListAsync();
+
+            if (AvailableBooks.Count == 0)
+            {
+                TempData["ErrorMessage"] = "Ödünç alınabilir kitap bulunamadı.";
+                return RedirectToPage("/Loans/Index");
+            }
+
+            return Page();
         }
+
 
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
-                Users = new SelectList(_context.Users, "UserId", "Email");
-                Books = new SelectList(_context.Books, "BookId", "Title");
+                // Tekrar mevcut kitapları dolduralım
+                AvailableBooks = await _context.Books
+                    .Where(b => b.IsAvailable)
+                    .ToListAsync();
                 return Page();
             }
 
-            _context.Loans.Add(Loan);
-            await _context.SaveChangesAsync();
+            // Kullanıcı bilgisini oturumdan al
+            var userEmail = User.Identity.Name;
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+            if (user == null)
+            {
+                ModelState.AddModelError("", "Kullanıcı bilgisi alınamadı.");
+                return Page();
+            }
 
-            return RedirectToPage("./Index");
+            // Loan kaydını oluştur
+            Loan.userId = user.UserId;
+            Loan.LoanDate = DateTime.UtcNow; // Başlangıç tarihi şimdi
+            Loan.IsReturned = false; // Varsayılan olarak iade edilmedi
+            _context.Loans.Add(Loan);
+
+            // Kitabın durumu güncelle
+            var book = await _context.Books.FindAsync(Loan.BookId);
+            if (book != null)
+            {
+                book.IsAvailable = false; // Kitap artık ödünç alındı
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToPage("/Loans/Index");
         }
     }
 }

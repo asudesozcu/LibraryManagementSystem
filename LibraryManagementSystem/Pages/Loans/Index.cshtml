@@ -1,29 +1,40 @@
 ﻿@page
 @model LibraryManagementSystem.Pages.Loans.IndexModel
 
-<h1>Loan Records</h1>
+<h1>Loans</h1>
 
-<table class="table">
+<!-- "Yeni Ödünç Al" düğmesi -->
+<a asp-page="/Loans/Create" class="btn btn-primary mb-3">New Loan</a>
+
+<table class="table table-bordered">
     <thead>
         <tr>
-            <th>Loan ID</th>
+            <th>Book Title</th>
             <th>User</th>
-            <th>Book</th>
             <th>Loan Date</th>
             <th>Return Date</th>
-            <th>Is Returned</th>
+            <th>Status</th>
+            @if (User.IsInRole("Admin"))
+            {
+                <th>Actions</th>
+            }
         </tr>
     </thead>
     <tbody>
         @foreach (var loan in Model.Loans)
         {
             <tr>
-                <td>@loan.LoanId</td>
-                <td>@loan.user.FirstName @loan.user.LastName</td>
                 <td>@loan.book.Title</td>
-                <td>@loan.LoanDate.ToString("yyyy-MM-dd")</td>
-                <td>@loan.ReturnDate?.ToString("yyyy-MM-dd")</td>
-                <td>@loan.IsReturned</td>
+                <td>@loan.user.FirstName @loan.user.LastName</td>
+                <td>@loan.LoanDate.ToShortDateString()</td>
+                <td>@loan.ReturnDate?.ToShortDateString() ?? "Not Returned"</td>
+                <td>@(loan.IsReturned ? "Returned" : "On Loan")</td>
+                @if (User.IsInRole("Admin"))
+                {
+                    <td>
+                        <a asp-page="./Return" asp-route-id="@loan.LoanId" class="btn btn-success btn-sm">Return</a>
+                    </td>
+                }
             </tr>
         }
     </tbody>
