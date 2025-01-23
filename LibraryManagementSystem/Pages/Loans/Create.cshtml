@@ -1,24 +1,28 @@
 ﻿@page
 @model LibraryManagementSystem.Pages.Loans.CreateModel
+@{
+    ViewData["Title"] = "Create Loan";
+}
 
-<h1>Ödünç Kitap Al</h1>
+h1>Create a Loan</h1>
+
+<div>
+    <h4>User: @ViewData["UserName"]</h4>
+</div>
 
 <form method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
     <div class="form-group">
-        <label asp-for="Loan.BookId" class="control-label">Kitap Seç</label>
-        <select asp-for="Loan.BookId" class="form-control" asp-items="@(new SelectList(Model.AvailableBooks, "BookId", "Title"))">
-            <option value="">Kitap Seçin</option>
-        </select>
+        <label asp-for="Loan.BookId" class="control-label">Select Book</label>
+        <select asp-for="Loan.BookId" class="form-control" asp-items="Model.AvailableBooks"></select>
         <span asp-validation-for="Loan.BookId" class="text-danger"></span>
     </div>
 
-    <div class="form-group">
-        <label asp-for="Loan.ReturnDate" class="control-label">İade Tarihi (Opsiyonel)</label>
-        <input asp-for="Loan.ReturnDate" class="form-control" type="date" />
-        <span asp-validation-for="Loan.ReturnDate" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Kitabı Ödünç Al</button>
+    <button type="submit" class="btn btn-primary">Loan Book</button>
+    <a asp-page="./Index" class="btn btn-secondary">Cancel</a>
 </form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

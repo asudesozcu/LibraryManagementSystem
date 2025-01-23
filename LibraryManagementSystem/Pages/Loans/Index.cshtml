@@ -6,17 +6,17 @@
 <!-- "Yeni Ödünç Al" düğmesi -->
 <a asp-page="/Loans/Create" class="btn btn-primary mb-3">New Loan</a>
 
+
 <table class="table table-bordered">
     <thead>
         <tr>
             <th>Book Title</th>
-            <th>User</th>
             <th>Loan Date</th>
             <th>Return Date</th>
             <th>Status</th>
             @if (User.IsInRole("Admin"))
             {
-                <th>Actions</th>
+                <th>User</th>
             }
         </tr>
     </thead>
@@ -25,15 +25,12 @@
         {
             <tr>
                 <td>@loan.book.Title</td>
-                <td>@loan.user.FirstName @loan.user.LastName</td>
                 <td>@loan.LoanDate.ToShortDateString()</td>
                 <td>@loan.ReturnDate?.ToShortDateString() ?? "Not Returned"</td>
                 <td>@(loan.IsReturned ? "Returned" : "On Loan")</td>
                 @if (User.IsInRole("Admin"))
                 {
-                    <td>
-                        <a asp-page="./Return" asp-route-id="@loan.LoanId" class="btn btn-success btn-sm">Return</a>
-                    </td>
+                    <td>@loan.user.FirstName @loan.user.LastName</td>
                 }
             </tr>
         }
