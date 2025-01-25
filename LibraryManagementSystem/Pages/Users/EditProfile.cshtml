@@ -1,0 +1,51 @@
+﻿@page
+@model LibraryManagementSystem.Pages.Users.EditProfileModel
+
+<h1>Edit Profile</h1>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+<form method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label asp-for="ProfileUser.FirstName" class="control-label">First Name</label>
+        <input asp-for="ProfileUser.FirstName" class="form-control" />
+        <span asp-validation-for="ProfileUser.FirstName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ProfileUser.LastName" class="control-label">Last Name</label>
+        <input asp-for="ProfileUser.LastName" class="form-control" />
+        <span asp-validation-for="ProfileUser.LastName" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="ProfileUser.Email" class="control-label">Email</label>
+        <input asp-for="ProfileUser.Email" class="form-control" />
+        <span asp-validation-for="ProfileUser.Email" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Profile Picture</label>
+        @if (!string.IsNullOrEmpty(Model.ProfileUser.ProfilePicturePath))
+        {
+            <img src="@Model.ProfileUser.ProfilePicturePath" alt="Profile Picture" class="img-thumbnail mb-3" style="max-width: 150px;" />
+        }
+        else
+        {
+            <p class="text-muted">No profile picture uploaded.</p>
+        }
+        <input type="file" name="ProfilePicture" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

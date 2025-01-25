@@ -46,6 +46,13 @@
                             <li class="nav-item">
                                 <a class="nav-link" asp-page="/Loans/Create">New Loan</a>
                             </li>
+                                 <nav>
+        <!-- Add this section to your existing layout navigation -->
+                                @if (User.Identity.IsAuthenticated && User.IsInRole("User"))
+                                {
+                <a asp-page="/Users/EditProfile" class="nav-link">Edit Profile</a>
+                                }
+    </nav>
                         }
 
                         <!-- Giriş/Çıkış -->

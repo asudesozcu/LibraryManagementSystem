@@ -46,14 +46,14 @@ namespace LibraryManagementSystem.Pages.Users
                 return Page();
             }
 
-            var userInDb = await _context.Users.FindAsync(User.UserId);
-            if (userInDb == null)
+            var user = await _context.Users.FindAsync(User.UserId);
+            if (user == null)
             {
                 return NotFound();
             }
 
             // Check if the password has changed
-            if (userInDb.Password != User.Password)
+            if (user.Password != User.Password)
             {
                 _logger.LogInformation("Password updated for user ID {UserId}. Hashing new password.", User.UserId);
                 User.Password = BCrypt.Net.BCrypt.HashPassword(User.Password);
@@ -61,11 +61,11 @@ namespace LibraryManagementSystem.Pages.Users
 
             _context.Attach(User).State = EntityState.Modified;
 
-            userInDb.FirstName = User.FirstName;
-            userInDb.LastName = User.LastName;
-            userInDb.Email = User.Email;
-            userInDb.Role = User.Role;
-            userInDb.IsActive = User.IsActive;
+            user.FirstName = User.FirstName;
+            user.LastName = User.LastName;
+            user.Email = User.Email;
+            user.Role = User.Role;
+            user.IsActive = User.IsActive;
 
             await _context.SaveChangesAsync();
 

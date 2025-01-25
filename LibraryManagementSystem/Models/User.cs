@@ -33,5 +33,6 @@ namespace LibraryManagementSystem.Models
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
         public ICollection<Loan> Loans { get; set; }
 
+        public string? ProfilePicturePath { get; set; }
     }
 }
