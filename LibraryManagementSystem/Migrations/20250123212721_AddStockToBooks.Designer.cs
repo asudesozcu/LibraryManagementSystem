@@ -4,6 +4,7 @@ using LibraryManagementSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryManagementSystem.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    partial class LibraryContextModelSnapshot : ModelSnapshot
+    [Migration("20250123212721_AddStockToBooks")]
+    partial class AddStockToBooks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,10 +44,6 @@ namespace LibraryManagementSystem.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsAvailable")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bit");
-
                     b.Property<int>("PublicationYear")
                         .HasColumnType("int");
 
@@ -69,7 +68,6 @@ namespace LibraryManagementSystem.Migrations
                             Author = "Test Author",
                             AvailableStock = 10,
                             CategoryId = 1,
-                            IsAvailable = false,
                             PublicationYear = 2023,
                             Stock = 0,
                             Title = "Test Book"

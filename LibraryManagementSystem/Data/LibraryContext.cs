@@ -33,7 +33,8 @@ namespace LibraryManagementSystem.Data
                     Author = "Test Author",
                     CategoryId = 1,
                     PublicationYear = 2023,
-                    IsAvailable = true
+                    AvailableStock =10, // Kitap ödünç alındıysa, mevcut stok azaltılır
+
                 }
             );
 

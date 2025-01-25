@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LibraryManagementSystem.Models
@@ -15,6 +16,8 @@ namespace LibraryManagementSystem.Models
         public int userId { get; set; }
         [ForeignKey(nameof(userId))]
 
+
+        
         public User user { get; set; }
 
         [Required]
