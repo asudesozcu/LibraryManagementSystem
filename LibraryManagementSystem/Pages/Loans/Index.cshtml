@@ -1,37 +1,71 @@
 ﻿@page
 @model LibraryManagementSystem.Pages.Loans.IndexModel
+@{
+    ViewData["Title"] = "Loans List";
+}
 
 <h1>Loans</h1>
 
-<!-- "Yeni Ödünç Al" düğmesi -->
-<a asp-page="/Loans/Create" class="btn btn-primary mb-3">New Loan</a>
-
+<!-- Success or Error messages -->
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+<!-- "New Loan" button only for Admin -->
+@if (User.IsInRole("Admin"))
+{
+    <a asp-page="/Loans/Create" class="btn btn-primary mb-3">New Loan</a>
+}
 
 <table class="table table-bordered">
     <thead>
         <tr>
-            <th>Book Title</th>
-            <th>Loan Date</th>
-            <th>Return Date</th>
-            <th>Status</th>
             @if (User.IsInRole("Admin"))
             {
                 <th>User</th>
             }
+            <th>Book Title</th>
+            <th>Loan Date</th>
+            <th>Return Date</th>
+            <th>Status</th>
+           
         </tr>
     </thead>
     <tbody>
         @foreach (var loan in Model.Loans)
         {
             <tr>
-                <td>@loan.book.Title</td>
-                <td>@loan.LoanDate.ToShortDateString()</td>
-                <td>@loan.ReturnDate?.ToShortDateString() ?? "Not Returned"</td>
-                <td>@(loan.IsReturned ? "Returned" : "On Loan")</td>
                 @if (User.IsInRole("Admin"))
                 {
-                    <td>@loan.user.FirstName @loan.user.LastName</td>
+                    <td>@loan.user?.FirstName @loan.user?.LastName </td>
                 }
+                <td>@loan.book?.Title </td>
+                <td>@loan.LoanDate.ToString("dd.MM.yyyy")</td>
+                <td>
+                    @if (loan.ReturnDate.HasValue)
+                    {
+                        @loan.ReturnDate.Value.ToString("dd.MM.yyyy")
+                    }
+                    else
+                    {
+                        <span>--</span>
+                    }
+                </td>
+                <td>
+                    @if (!loan.IsReturned)
+                    {
+                        <a asp-page="./Edit" asp-route-id="@loan.LoanId" class="btn btn-danger">Return Book </a>
+                     
+                    }
+                    @if (loan.IsReturned)
+                    {
+                        <span style="color: green; font-weight: bold;"> Returned ✔️</span>
+                    }
+                </td>
             </tr>
         }
     </tbody>

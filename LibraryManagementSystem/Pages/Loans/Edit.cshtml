@@ -1,30 +1,25 @@
-﻿@page
+﻿@page "{id:int}"
 @model LibraryManagementSystem.Pages.Loans.EditModel
+@{
+    ViewData["Title"] = "Return Loan";
+}
 
+<h1 class="text-primary">Return Loan</h1>
 
-<h1>Return Loan</h1>
-
-<form method="post">
-    <div class="form-group">
-        <label>Book Title:</label>
-        <p>@Model.Loan.book.Title</p>
+<div class="card shadow-sm p-3 mb-5 bg-white rounded">
+    <div class="card-body">
+        <h4 class="card-title text-secondary">Loan Details</h4>
+        <div class="alert alert-info">
+            <p><strong>Book:</strong> <span class="text-dark">@Model.Loan.book?.Title "</span></p>
+            <p><strong>Borrower:</strong> <span class="text-dark">@Model.Loan.user?.FirstName @Model.Loan.user?.LastName "</span></p>
+            <p><strong>Loan Date:</strong> <span class="text-dark">@Model.Loan.LoanDate.ToString("dd.MM.yyyy")</span></p>
+        </div>
     </div>
+</div>
 
-    <div class="form-group">
-        <label>Borrower:</label>
-        <p>@Model.Loan.user.FirstName @Model.Loan.user.LastName</p>
-    </div>
+<form method="post" class="mt-4">
+    <input type="hidden" asp-for="Loan.LoanId" />
 
-    <div class="form-group">
-        <label>Loan Date:</label>
-        <p>@Model.Loan.LoanDate.ToShortDateString()</p>
-    </div>
-
-    <div class="form-group">
-        <label>Return Date:</label>
-        <p>@Model.Loan.ReturnDate?.ToShortDateString() ?? "Not Returned"</p>
-    </div>
-
-    <button type="submit" class="btn btn-success">Mark as Returned</button>
-    <a asp-page="./Index" class="btn btn-secondary">Cancel</a>
+    <button type="submit" class="btn btn-success btn-lg">Confirm Return</button>
+    <a asp-page="./Index" class="btn btn-secondary btn-lg ml-3">Cancel</a>
 </form>

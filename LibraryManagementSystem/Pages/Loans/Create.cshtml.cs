@@ -21,19 +21,20 @@ namespace LibraryManagementSystem.Pages.Loans
 
         [BindProperty]
         public Loan Loan { get; set; }
-
         public List<SelectListItem> AvailableBooks { get; set; }  // Book yerine SelectListItem kullanın
+
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var userEmail = User.FindFirstValue(ClaimTypes.Email);  // E-posta adresini alıyoruz
+            // Kullanıcı oturum bilgisini kontrol et
+            var userEmail = User.FindFirstValue(ClaimTypes.Email); // Kullanıcının e-posta adresini al
             if (string.IsNullOrEmpty(userEmail))
             {
                 TempData["ErrorMessage"] = "User session not found. Please log in.";
                 return RedirectToPage("/Users/Login");
             }
 
-            // Kullanıcıyı e-posta ile arıyoruz
+            // Kullanıcıyı e-posta adresi ile arıyoruz
             var user = await _context.Users
                 .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Email == userEmail && u.IsActive);
@@ -45,17 +46,21 @@ namespace LibraryManagementSystem.Pages.Loans
                 return RedirectToPage("/Users/Login");
             }
 
+            // Kullanıcı adını ViewData'ya ekle
             ViewData["UserName"] = $"{user.FirstName} {user.LastName}";
 
-            // Populate available books as SelectListItem
-            AvailableBooks = await _context.Books
-                .Where(b => b.IsAvailable)
-                .Select(b => new SelectListItem
-                {
-                    Value = b.BookId.ToString(),
-                    Text = b.Title
-                })
-                .ToListAsync();
+            AvailableBooks = _context.Books
+    .Where(b => b.AvailableStock > 0)
+    .AsEnumerable() // Veritabanından çek ve bellek üzerinde işle
+    .GroupBy(b => b.BookId)
+    .Select(g => g.First())
+    .Select(b => new SelectListItem
+    {
+        Value = b.BookId.ToString(),
+        Text = $"{b.Title} (Available: {b.AvailableStock})"
+    })
+    .ToList();
+
 
             if (!AvailableBooks.Any())
             {
@@ -65,6 +70,7 @@ namespace LibraryManagementSystem.Pages.Loans
 
             return Page();
         }
+
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -76,7 +82,7 @@ namespace LibraryManagementSystem.Pages.Loans
             {
                 _logger.LogError("User email not found in claims. Redirecting to login page."); // Log: Kullanıcı oturumu hatası
                 ModelState.AddModelError("", "User session not found. Please log in.");
-                await PopulateAvailableBooks();
+                await PopulateBooksDropdown();
                 return Page();
             }
 
@@ -89,7 +95,7 @@ namespace LibraryManagementSystem.Pages.Loans
             {
                 _logger.LogWarning("User not found for email: {UserEmail}", userEmail);
                 ModelState.AddModelError("UserId", "User is required.");
-                await PopulateAvailableBooks();
+                await PopulateBooksDropdown();
                 return Page();
             }
 
@@ -101,7 +107,7 @@ namespace LibraryManagementSystem.Pages.Loans
             {
                 _logger.LogWarning("BookId is required but was not provided.");
                 ModelState.AddModelError("BookId", "Book selection is required.");
-                await PopulateAvailableBooks();
+                await PopulateBooksDropdown();
                 return Page();
             }
 
@@ -112,14 +118,15 @@ namespace LibraryManagementSystem.Pages.Loans
             {
                 _logger.LogWarning("Book not found for BookId: {BookId}", Loan.BookId);
                 ModelState.AddModelError("BookId", "Selected book could not be found.");
-                await PopulateAvailableBooks();
+                await PopulateBooksDropdown();
                 return Page();
             }
+            book.AvailableStock -= 1;
+
 
             // Loan bilgilerini tamamla ve kaydet
             Loan.LoanDate = DateTime.UtcNow;
             Loan.IsReturned = false;
-            book.IsAvailable = false;
 
             _context.Loans.Add(Loan);
             await _context.SaveChangesAsync();
@@ -131,19 +138,30 @@ namespace LibraryManagementSystem.Pages.Loans
 
 
 
-        private async Task PopulateAvailableBooks()
+        private async Task PopulateBooksDropdown()
         {
             AvailableBooks = await _context.Books
-                                           .Where(b => b.IsAvailable)
-                                           .Select(b => new SelectListItem
-                                           {
-                                               Value = b.BookId.ToString(),
-                                               Text = b.Title
-                                           }).ToListAsync();
-        }
+                .Where(b => b.AvailableStock > 0)
+                .Select(b => new SelectListItem
+                {
+                    Value = b.BookId.ToString(),
+                    Text = $"{b.Title} (Available: {b.AvailableStock})"
+                })
+                .ToListAsync();
 
+            if (!AvailableBooks.Any())
+            {
+                ViewData["Books"] = new List<SelectListItem>
+                {
+                    new SelectListItem { Value = "", Text = "No books available", Disabled = true }
+                };
+            }
+            else
+            {
+                ViewData["Books"] = AvailableBooks;
+            }
+
+        }
     }
 
 }
-
-
