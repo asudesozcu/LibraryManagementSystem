@@ -81,7 +81,7 @@ namespace LibraryManagementSystem.Pages.Users
             if (user.Role == "User")
             {
                 _logger.LogInformation("Redirecting user to Loans page");
-                return RedirectToPage("/Loans/Index"); // Loans klasöründeki Index.cshtml'e yönlendir
+                    return RedirectToPage("/Loans/Index"); // Loans klasöründeki Index.cshtml'e yönlendir
             }
 
             return Page();

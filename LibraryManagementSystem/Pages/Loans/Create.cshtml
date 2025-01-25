@@ -15,11 +15,18 @@ h1>Create a Loan</h1>
 
     <div class="form-group">
         <label asp-for="Loan.BookId" class="control-label">Select Book</label>
-        <select asp-for="Loan.BookId" class="form-control" asp-items="Model.AvailableBooks"></select>
+        <select asp-for="Loan.BookId" class="form-control">
+            @foreach (var book in Model.AvailableBooks)
+            {
+                <option value="@book.Value">
+                    @book.Text
+                </option>
+            }
+        </select>
         <span asp-validation-for="Loan.BookId" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-primary">Loan Book</button>
+    <button type="submit" class="btn btn-primary">Submit</button>
     <a asp-page="./Index" class="btn btn-secondary">Cancel</a>
 </form>
 

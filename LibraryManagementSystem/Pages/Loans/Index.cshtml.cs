@@ -3,69 +3,75 @@ using LibraryManagementSystem.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace LibraryManagementSystem.Pages.Loans
 {
     public class IndexModel : PageModel
     {
         private readonly LibraryContext _context;
+        private readonly ILogger<IndexModel> _logger;
 
-        public IndexModel(LibraryContext context)
+        public IndexModel(LibraryContext context, ILogger<IndexModel> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public List<Loan> Loans { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
-            // Kullanıcı rolünü al
-            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+            _logger.LogInformation("Fetching loans for user: {UserEmail}", User.Identity?.Name);
 
-            // Eğer kullanıcı Admin ise tüm Loan kayıtlarını getir
-            if (userRole == "Admin")
+            if (User.IsInRole("Admin"))
             {
                 Loans = await _context.Loans
                     .Include(l => l.book)
-                    .Include(l => l.user)
-                    .AsNoTracking()
+                    .Include(l => l.user) // Ensure the user data is loaded
                     .ToListAsync();
+                _logger.LogInformation("Admin is viewing all loans. Total loans: {LoanCount}", Loans.Count);
             }
             else
             {
-                // Kullanıcı e-posta adresini al
                 var userEmail = User.FindFirstValue(ClaimTypes.Email);
+
                 if (string.IsNullOrEmpty(userEmail))
                 {
-                    ModelState.AddModelError("", "User session not found. Please log in.");
-                    return Page();
+                    _logger.LogWarning("User session is missing. Redirecting to login.");
+                    TempData["ErrorMessage"] = "User session not found. Please log in.";
+                    return RedirectToPage("/Users/Login");
                 }
 
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
 
-                // Kullanıcıyı e-posta ile arıyoruz
-                
-
-                // Kullanıcının yalnızca kendi Loan kayıtlarını al
-                var user = await _context.Users
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(u => u.Email == userEmail);
-
-              
+                if (user == null)
+                {
+                    _logger.LogWarning("User with email '{UserEmail}' not found in database.", userEmail);
+                    TempData["ErrorMessage"] = "User not found in the system.";
+                    return RedirectToPage("/Users/Login");
+                }
 
                 Loans = await _context.Loans
                     .Include(l => l.book)
+                    .Include(l => l.user) // Ensure the user data is loaded
                     .Where(l => l.userId == user.UserId)
-                    .AsNoTracking()
                     .ToListAsync();
+
+                _logger.LogInformation("User {UserEmail} is viewing their loans. Total loans: {LoanCount}", userEmail, Loans.Count);
+            }
+
+            // Log details about loaded loans
+            foreach (var loan in Loans)
+            {
+                _logger.LogInformation("Loan ID: {LoanId}, User: {User}, Book: {Book}, Loan Date: {LoanDate}",
+                    loan.LoanId,
+                    loan.user != null ? $"{loan.user.FirstName} {loan.user.LastName}" : "Unknown",
+                    loan.book != null ? loan.book.Title : "Unknown",
+                    loan.LoanDate);
             }
 
             return Page();
         }
     }
 }
-
- 
-

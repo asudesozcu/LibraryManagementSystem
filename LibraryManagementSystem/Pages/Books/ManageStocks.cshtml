@@ -1,0 +1,44 @@
+﻿@page
+@model LibraryManagementSystem.Pages.Books.ManageStockModel
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+<h1>Manage Book Stocks</h1>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Category</th>
+            <th>Stock</th>
+            <th>Available Stock</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var book in Model.Books)
+        {
+            <tr>
+                <td>@book.Title</td>
+                <td>@book.Author</td>
+                <td>@book.Category?.Name</td>
+                <td>@book.Stock</td>
+                <td>@book.AvailableStock</td>
+                <td>
+                    <form method="post" asp-page-handler="UpdateStock">
+                        <input type="hidden" name="BookId" value="@book.BookId" />
+                        <input type="number" name="NewStock" min="0" class="form-control" placeholder="New Stock" />
+                        <button type="submit" class="btn btn-primary btn-sm mt-1">Update</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
