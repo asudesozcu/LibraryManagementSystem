@@ -12,6 +12,14 @@
             <a asp-page="/Loans/Create" class="btn btn-success">
                 <i class="bi bi-plus-circle"></i> New Loan
             </a>
+
+            <div class="text-end mb-3">
+                <form method="get">
+                    <button type="submit" name="export" value="true" class="btn btn-primary">
+                        <i class="bi bi-download"></i> Export Data
+                    </button>
+                </form>
+            </div>
         }
     </div>
 
@@ -98,4 +106,42 @@
             </table>
         </div>
     </div>
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation" class="d-flex justify-content-center mt-4">
+        <ul class="pagination">
+            @if (Model.CurrentPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="?pageNumber=@(Model.CurrentPage - 1)">Previous</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled">
+                    <span class="page-link">Previous</span>
+                </li>
+            }
+
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(Model.CurrentPage == i ? "active" : "")">
+                    <a class="page-link" href="?pageNumber=@i">@i</a>
+                </li>
+            }
+
+            @if (Model.CurrentPage < Model.TotalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="?pageNumber=@(Model.CurrentPage + 1)">Next</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled">
+                    <span class="page-link">Next</span>
+                </li>
+            }
+        </ul>
+    </nav>
 </div>
