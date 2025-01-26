@@ -97,11 +97,7 @@ namespace LibraryManagementSystem.Pages.Users
 
 
 
-        public IActionResult OnPostForgotPassword()
-        {
-            // Redirect to the Forgot Password page
-            return RedirectToPage("/Users/ForgotPassword");
-        }
+       
 
         public IActionResult OnPostCreateNewAccount()
         {
