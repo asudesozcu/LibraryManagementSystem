@@ -1,48 +1,69 @@
 ﻿@page
 @model LibraryManagementSystem.Pages.Books.CreateModel
 
+<div class="container mt-5">
+    <h1 class="text-center mb-4" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 600; font-size: 2rem;">Create a New Book</h1>
 
+    <!-- Validation Error Summary -->
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3 text-center"></div>
 
-<h1>Create a New Book</h1>
+    <!-- Book Creation Form -->
+    <form method="post" class="form">
+        <!-- Book Title -->
+        <div class="form-group mb-3">
+            <!-- Increase margin-bottom here -->
+            <label asp-for="Book.Title" class="control-label font-weight-bold mb-2"></label>
+            <input asp-for="Book.Title" class="form-control" placeholder="Enter book title" />
+            <span asp-validation-for="Book.Title" class="text-danger"></span>
+        </div>
 
-<form method="post">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <!-- Book Author -->
+        <div class="form-group mb-3">
+            <!-- Increase margin-bottom here -->
+            <label asp-for="Book.Author" class="control-label font-weight-bold mb-2"></label>
+            <input asp-for="Book.Author" class="form-control" placeholder="Enter author's name" />
+            <span asp-validation-for="Book.Author" class="text-danger"></span>
+        </div>
 
-    <div class="form-group">
-        <label asp-for="Book.Title" class="control-label"></label>
-        <input asp-for="Book.Title" class="form-control" />
-        <span asp-validation-for="Book.Title" class="text-danger"></span>
-    </div>
+        <!-- Book Category -->
+        <div class="form-group mb-3">
+            <!-- Increase margin-bottom here -->
+            <label asp-for="Book.CategoryId" class="control-label font-weight-bold mb-2"></label>
+            <select asp-for="Book.CategoryId" class="form-control">
+                <option value="">Select Category</option>
+                @foreach (var category in Model.Categories)
+                {
+                    <option value="@category.Value">@category.Text</option>
+                }
+            </select>
+            <span asp-validation-for="Book.CategoryId" class="text-danger"></span>
+        </div>
 
-    <div class="form-group">
-        <label asp-for="Book.Author" class="control-label"></label>
-        <input asp-for="Book.Author" class="form-control" />
-        <span asp-validation-for="Book.Author" class="text-danger"></span>
-    </div>
+        <!-- Publication Year -->
+        <div class="form-group mb-3">
+            <!-- Increase margin-bottom here -->
+            <label asp-for="Book.PublicationYear" class="control-label font-weight-bold mb-2"></label>
+            <input asp-for="Book.PublicationYear" class="form-control" type="number" placeholder="Enter publication year" />
+            <span asp-validation-for="Book.PublicationYear" class="text-danger"></span>
+        </div>
 
-    <div class="form-group">
-        <label asp-for="Book.CategoryId" class="control-label"></label>
-        <select asp-for="Book.CategoryId" class="form-control" asp-items="Model.Categories"></select>
-        <span asp-validation-for="Book.CategoryId" class="text-danger"></span>
+        <!-- Availability Checkbox -->
+        <div class="form-group form-check mb-3">
+            <!-- Increase margin-bottom here -->
+            <input class="form-check-input" asp-for="Book.IsAvailable" />
+            <label class="form-check-label" asp-for="Book.IsAvailable">Is Available</label>
+        </div>
 
-
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Book.PublicationYear" class="control-label"></label>
-        <input asp-for="Book.PublicationYear" class="form-control" type="number" />
-        <span asp-validation-for="Book.PublicationYear" class="text-danger"></span>
-
-    </div>
-
-    <div class="form-group form-check">
-        <input class="form-check-input" asp-for="Book.IsAvailable" />
-        <label class="form-check-label" asp-for="Book.IsAvailable"></label>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Save</button>
-    <a asp-page="./Index" class="btn btn-secondary">Cancel</a>
-</form>
+        <!-- Submit and Cancel Buttons -->
+        <div class="form-group text-center">
+            <button type="submit" class="btn btn-success btn-lg">Save</button>
+            <a asp-page="./Index" class="btn btn-secondary btn-lg ml-4">
+                <!-- Increase margin-left here -->
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
