@@ -4,31 +4,40 @@
     ViewData["Title"] = "Create Loan";
 }
 
-h1>Create a Loan</h1>
+<div class="container mt-5">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0">Create a Loan</h2>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-<div>
-    <h4>User: @ViewData["UserName"]</h4>
-</div>
+                <div class="mb-4">
+                    <label asp-for="Loan.BookId" class="form-label">Select Book</label>
+                    <select asp-for="Loan.BookId" class="form-select">
+                        @foreach (var book in Model.AvailableBooks)
+                        {
+                            <option value="@book.Value">
+                                @book.Text
+                            </option>
+                        }
+                    </select>
+                    <span asp-validation-for="Loan.BookId" class="text-danger"></span>
+                </div>
 
-<form method="post">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-    <div class="form-group">
-        <label asp-for="Loan.BookId" class="control-label">Select Book</label>
-        <select asp-for="Loan.BookId" class="form-control">
-            @foreach (var book in Model.AvailableBooks)
-            {
-                <option value="@book.Value">
-                    @book.Text
-                </option>
-            }
-        </select>
-        <span asp-validation-for="Loan.BookId" class="text-danger"></span>
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-success px-4">
+                        <i class="bi bi-check-circle"></i> Submit
+                    </button>
+                    <a asp-page="./Index" class="btn btn-outline-secondary px-4">
+                        <i class="bi bi-x-circle"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
-
-    <button type="submit" class="btn btn-primary">Submit</button>
-    <a asp-page="./Index" class="btn btn-secondary">Cancel</a>
-</form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

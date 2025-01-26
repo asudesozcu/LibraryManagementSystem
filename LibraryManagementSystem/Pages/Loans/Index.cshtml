@@ -4,69 +4,98 @@
     ViewData["Title"] = "Loans List";
 }
 
-<h1>Loans</h1>
-
-<!-- Success or Error messages -->
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
-}
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
-}
-<!-- "New Loan" button only for Admin -->
-@if (User.IsInRole("Admin"))
-{
-    <a asp-page="/Loans/Create" class="btn btn-primary mb-3">New Loan</a>
-}
-
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            @if (User.IsInRole("Admin"))
-            {
-                <th>User</th>
-            }
-            <th>Book Title</th>
-            <th>Loan Date</th>
-            <th>Return Date</th>
-            <th>Status</th>
-           
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var loan in Model.Loans)
+<div class="container mt-4">
+    <!-- Başlık -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        @if (User.IsInRole("Admin"))
         {
-            <tr>
-                @if (User.IsInRole("Admin"))
-                {
-                    <td>@loan.user?.FirstName @loan.user?.LastName </td>
-                }
-                <td>@loan.book?.Title </td>
-                <td>@loan.LoanDate.ToString("dd.MM.yyyy")</td>
-                <td>
-                    @if (loan.ReturnDate.HasValue)
-                    {
-                        @loan.ReturnDate.Value.ToString("dd.MM.yyyy")
-                    }
-                    else
-                    {
-                        <span>--</span>
-                    }
-                </td>
-                <td>
-                    @if (!loan.IsReturned)
-                    {
-                        <a asp-page="./Edit" asp-route-id="@loan.LoanId" class="btn btn-danger">Return Book </a>
-                     
-                    }
-                    @if (loan.IsReturned)
-                    {
-                        <span style="color: green; font-weight: bold;"> Returned ✔️</span>
-                    }
-                </td>
-            </tr>
+            <a asp-page="/Loans/Create" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> New Loan
+            </a>
         }
-    </tbody>
-</table>
+    </div>
+
+    <!-- Başarı ve Hata Mesajları -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Loans Tablosu -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Loans List</h4>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <th scope="col">User</th>
+                        }
+                        <th scope="col">Book Title</th>
+                        <th scope="col">Loan Date</th>
+                        <th scope="col">Return Date</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Loans.Any())
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">
+                                <em>No loans available.</em>
+                            </td>
+                        </tr>
+                    }
+                    @foreach (var loan in Model.Loans)
+                    {
+                        <tr>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <td>@loan.user?.FirstName @loan.user?.LastName</td>
+                            }
+                            <td>@loan.book?.Title</td>
+                            <td>@loan.LoanDate.ToString("dd.MM.yyyy")</td>
+                            <td>
+                                @if (loan.ReturnDate.HasValue)
+                                {
+                                    @loan.ReturnDate.Value.ToString("dd.MM.yyyy")
+                                }
+                                else
+                                {
+                                    <span>--</span>
+                                }
+                            </td>
+                            <td>
+                                @if (!loan.IsReturned)
+                                {
+                                    <a asp-page="./Edit" asp-route-id="@loan.LoanId" class="btn btn-danger btn-sm">
+                                        <i class="bi bi-box-arrow-in-left"></i> Return Book
+                                    </a>
+                                }
+                                @if (loan.IsReturned)
+                                {
+                                    <span class="text-success fw-bold">
+                                        <i class="bi bi-check-circle-fill"></i> Returned ✔️
+                                    </span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
