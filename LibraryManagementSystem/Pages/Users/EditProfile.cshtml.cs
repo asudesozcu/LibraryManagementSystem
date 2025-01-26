@@ -68,7 +68,7 @@ namespace LibraryManagementSystem.Pages.Users
                 }
             }
 
-                var userEmail = User.FindFirstValue(ClaimTypes.Email);
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
 
             if (string.IsNullOrEmpty(userEmail))
             {
@@ -96,39 +96,60 @@ namespace LibraryManagementSystem.Pages.Users
             userInDb.FirstName = ProfileUser.FirstName;
             userInDb.LastName = ProfileUser.LastName;
 
-            // Profile picture upload handling
-            if (ProfilePicture != null && ProfilePicture.Length > 0)
+            // Validate file input
+            if (ProfilePicture == null)
             {
-                var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
+                TempData["ErrorMessage"] = "Please select a file to upload.";
+                return Page();
+            }
 
-                // Create the directory if it doesn't exist
-                if (!Directory.Exists(uploadsFolder))
+            // Validate file size (e.g., max 5 MB)
+            if (ProfilePicture.Length > 5 * 1024 * 1024) // 5 MB
+            {
+                TempData["ErrorMessage"] = "File size cannot exceed 5 MB.";
+                return Page();
+            }
+
+            // Validate file type (only images: jpg, png)
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
+            var fileExtension = Path.GetExtension(ProfilePicture.FileName).ToLower();
+
+            if (!allowedExtensions.Contains(fileExtension))
+            {
+                TempData["ErrorMessage"] = "Invalid file type. Only JPG and PNG files are allowed.";
+                return Page();
+            }
+
+            // Profile picture upload handling
+            var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
+
+            // Create the directory if it doesn't exist
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+                _logger.LogInformation("[OnPostAsync] 'uploads' folder created at {Path}.", uploadsFolder);
+            }
+
+            // Generate a unique file name for the uploaded picture
+            var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(ProfilePicture.FileName)}";
+            var filePath = Path.Combine(uploadsFolder, fileName);
+
+            try
+            {
+                using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    Directory.CreateDirectory(uploadsFolder);
-                    _logger.LogInformation("[OnPostAsync] 'uploads' folder created at {Path}.", uploadsFolder);
+                    await ProfilePicture.CopyToAsync(stream);
                 }
 
-                // Generate a unique file name for the uploaded picture
-                var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(ProfilePicture.FileName)}";
-                var filePath = Path.Combine(uploadsFolder, fileName);
-
-                try
-                {
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await ProfilePicture.CopyToAsync(stream);
-                    }
-
-                    // Update user's profile picture path
-                    userInDb.ProfilePicturePath = $"/uploads/{fileName}";
-                    _logger.LogInformation("[OnPostAsync] Profile picture uploaded and saved as: {Path}.", filePath);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "[OnPostAsync] Error uploading profile picture.");
-                    TempData["ErrorMessage"] = "An error occurred while uploading the profile picture.";
-                    return Page();
-                }
+                // Update user's profile picture path
+                userInDb.ProfilePicturePath = $"/uploads/{fileName}";
+                _logger.LogInformation("[OnPostAsync] Profile picture uploaded and saved as: {Path}.", filePath);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "[OnPostAsync] Error uploading profile picture.");
+                TempData["ErrorMessage"] = "An error occurred while uploading the profile picture.";
+                return Page();
             }
 
             // Save changes to the database
@@ -147,6 +168,7 @@ namespace LibraryManagementSystem.Pages.Users
 
             return RedirectToPage("/Users/EditProfile"); // Redirect to a profile page or another appropriate page
         }
+
     }
 
 }

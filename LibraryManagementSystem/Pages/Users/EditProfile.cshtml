@@ -1,50 +1,67 @@
 ﻿@page
 @model LibraryManagementSystem.Pages.Users.EditProfileModel
 
-<h1>Edit Profile</h1>
+<div class="container mt-5">
+    <!-- Başlık -->
+    <h1 class="text-center text-primary mb-4" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 600; font-size: 2.5rem;">Edit Profile</h1>
 
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
-}
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
-}
+    <!-- Hata ve Başarı Mesajları -->
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
 
-<form method="post" enctype="multipart/form-data">
-    <div class="form-group">
-        <label asp-for="ProfileUser.FirstName" class="control-label">First Name</label>
-        <input asp-for="ProfileUser.FirstName" class="form-control" />
-        <span asp-validation-for="ProfileUser.FirstName" class="text-danger"></span>
-    </div>
+    <form method="post" enctype="multipart/form-data" class="bg-light p-4 rounded shadow-sm">
+        <div class="row">
+            <!-- Profil Fotoğrafı (Sol Taraf) -->
+            <div class="col-md-4 text-center mb-3">
+                <label class="form-label">Profile Picture</label>
+                <div>
+                    @if (!string.IsNullOrEmpty(Model.ProfileUser.ProfilePicturePath))
+                    {
+                        <img src="@Model.ProfileUser.ProfilePicturePath" alt="Profile Picture" class="img-fluid rounded-circle shadow-lg" style="width: 220px; height: 250px; object-fit: cover; border: 5px solid #f1f1f1;" />
+                    }
+                    else
+                    {
+                        <p class="text-muted">No profile picture uploaded.</p>
+                    }
+                </div>
+                <input type="file" name="ProfilePicture" class="form-control" />
+            </div>
 
-    <div class="form-group">
-        <label asp-for="ProfileUser.LastName" class="control-label">Last Name</label>
-        <input asp-for="ProfileUser.LastName" class="form-control" />
-        <span asp-validation-for="ProfileUser.LastName" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="ProfileUser.Email" class="control-label">Email</label>
-        <input asp-for="ProfileUser.Email" class="form-control" />
-        <span asp-validation-for="ProfileUser.Email" class="text-danger"></span>
-    </div>
+            <!-- Form (Sağ Taraf) -->
+            <div class="col-md-8">
+                <!-- First Name -->
+                <div class="form-group mb-3">
+                    <label asp-for="ProfileUser.FirstName" class="form-label">First Name</label>
+                    <input asp-for="ProfileUser.FirstName" class="form-control" />
+                    <span asp-validation-for="ProfileUser.FirstName" class="text-danger"></span>
+                </div>
 
-    <div class="form-group">
-        <label>Profile Picture</label>
-        @if (!string.IsNullOrEmpty(Model.ProfileUser.ProfilePicturePath))
-        {
-            <img src="@Model.ProfileUser.ProfilePicturePath" alt="Profile Picture" class="img-thumbnail mb-3" style="max-width: 150px;" />
-        }
-        else
-        {
-            <p class="text-muted">No profile picture uploaded.</p>
-        }
-        <input type="file" name="ProfilePicture" class="form-control" />
-    </div>
+                <!-- Last Name -->
+                <div class="form-group mb-3">
+                    <label asp-for="ProfileUser.LastName" class="form-label">Last Name</label>
+                    <input asp-for="ProfileUser.LastName" class="form-control" />
+                    <span asp-validation-for="ProfileUser.LastName" class="text-danger"></span>
+                </div>
 
-    <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
-</form>
+                <!-- Email -->
+                <div class="form-group mb-3">
+                    <label asp-for="ProfileUser.Email" class="form-label">Email</label>
+                    <input asp-for="ProfileUser.Email" class="form-control" />
+                    <span asp-validation-for="ProfileUser.Email" class="text-danger"></span>
+                </div>
+
+                <!-- Save Changes Butonu -->
+                <button type="submit" class="btn btn-primary btn-lg mt-3 w-100">Save Changes</button>
+            </div>
+        </div>
+    </form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

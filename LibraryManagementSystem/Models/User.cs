@@ -20,8 +20,10 @@ namespace LibraryManagementSystem.Models
         [EmailAddress]
         public string Email { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Password is required.")]
         [StringLength(255)]
+        [RegularExpression(@"^(?=.*[A-Z]).{6,}$", ErrorMessage = "Password must contain at least one uppercase letter and be at least 6 characters long.")]
+
         public string Password { get; set; }
 
         [Required]

@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using LibraryManagementSystem.Data;
 using LibraryManagementSystem.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -32,6 +33,11 @@ namespace LibraryManagementSystem.Pages.Users
             if (_context.Users.Any(u => u.Email == Register.Email))
             {
                 ModelState.AddModelError("Register.Email", "Email already exists.");
+                return Page();
+            }
+            if (!Regex.IsMatch(Register.Password, @"^(?=.*[A-Z]).{6,}$"))
+            {
+                ModelState.AddModelError("User.Password", "Password must contain at least one uppercase letter and be at least 6 characters long.");
                 return Page();
             }
 
