@@ -14,6 +14,9 @@ namespace LibraryManagementSystem.Pages.Books
         private readonly ILogger<IndexModel> _logger;
 
         public IList<Book> Books { get; set; } = new List<Book>();
+        public string CurrentFilter { get; set; }
+        public int CurrentPage { get; set; }
+        public int TotalPages { get; set; }
 
         public IndexModel(LibraryContext context, ILogger<IndexModel> logger)
         {
@@ -23,11 +26,11 @@ namespace LibraryManagementSystem.Pages.Books
 
         public async Task OnGetAsync(string searchString, int? pageNumber)
         {
-            Books = await _context.Books
-          .Include(b => b.Category) // Include category if there's a relationship
-          .ToListAsync();
+            CurrentFilter = searchString;
 
-            var query = _context.Books.AsQueryable();
+            var query = _context.Books
+                .Include(b => b.Category) // Include related category
+                .AsQueryable();
 
             // Search Logic
             if (!string.IsNullOrEmpty(searchString))
@@ -37,7 +40,11 @@ namespace LibraryManagementSystem.Pages.Books
 
             // Pagination Logic
             var pageSize = 10;
-            Books = await query.Skip(((pageNumber ?? 1) - 1) * pageSize)
+            CurrentPage = pageNumber ?? 1;
+            var totalItems = await query.CountAsync(); // Total number of items
+            TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            Books = await query.Skip((CurrentPage - 1) * pageSize)
                                .Take(pageSize)
                                .ToListAsync();
         }

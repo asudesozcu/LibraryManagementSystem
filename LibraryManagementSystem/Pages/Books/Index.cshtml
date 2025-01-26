@@ -8,7 +8,7 @@
     <!-- Arama Formu -->
     <form method="get" class="d-flex justify-content-center mb-4">
         <div class="form-group d-flex align-items-center">
-            <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control" placeholder="Search by title or author..." style="max-width: 400px; border-radius: 25px;" />
+            <input type="text" name="searchString" value="@Model.CurrentFilter" class="form-control" placeholder="Search by title or author..." style="max-width: 400px; border-radius: 25px;" />
             <button type="submit" class="btn btn-primary ms-3" style="border-radius: 25px;">Search</button>
         </div>
     </form>
@@ -37,7 +37,6 @@
                     <td>@book.Author</td>
                     <td>@book.PublicationYear</td>
                     <td>@book.Category?.Name</td>
-                   
                     <td>
                         <a asp-page="./Edit" asp-route-id="@book.BookId" class="btn btn-warning btn-sm">Edit</a>
                         <a asp-page="./Details" asp-route-id="@book.BookId" class="btn btn-info btn-sm">Details</a>
@@ -47,4 +46,42 @@
             }
         </tbody>
     </table>
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation" class="d-flex justify-content-center mt-4">
+        <ul class="pagination">
+            @if (Model.CurrentPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="?pageNumber=@(Model.CurrentPage - 1)&searchString=@Model.CurrentFilter">Previous</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled">
+                    <span class="page-link">Previous</span>
+                </li>
+            }
+
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(Model.CurrentPage == i ? "active" : "")">
+                    <a class="page-link" href="?pageNumber=@i&searchString=@Model.CurrentFilter">@i</a>
+                </li>
+            }
+
+            @if (Model.CurrentPage < Model.TotalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="?pageNumber=@(Model.CurrentPage + 1)&searchString=@Model.CurrentFilter">Next</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled">
+                    <span class="page-link">Next</span>
+                </li>
+            }
+        </ul>
+    </nav>
 </div>
