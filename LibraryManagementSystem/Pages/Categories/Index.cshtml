@@ -1,29 +1,72 @@
 ﻿@page
 @model LibraryManagementSystem.Pages.Categories.IndexModel
 
+<div class="container mt-5">
+    <!-- Başlık -->
+    <h1 class="text-center text-primary mb-4" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 600; font-size: 2.5rem;">Categories</h1>
 
+    <!-- Yeni Kategori Ekle Butonu -->
+    <div class="text-end mb-3">
+        <a asp-page="./Create" class="btn btn-success btn-lg">Add New Category</a>
+    </div>
 
-<h1>Categories</h1>
-
-
-<a asp-page="./Create" class="btn btn-primary">Add New Category</a>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Category Name</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var category in Model.Categories)
-        {
+    <!-- Kategoriler Tablosu -->
+    <table class="table table-striped table-bordered table-hover">
+        <thead class="table-dark">
             <tr>
-                <td>@category.Name</td>
-                <td>
-                    <a asp-page="./Edit" asp-route-id="@category.CategoryId" class="btn btn-warning">Edit</a>
-                    <a asp-page="./Delete" asp-route-id="@category.CategoryId" class="btn btn-danger">Delete</a>
-                </td>
+                <th>Category Name</th>
+                <th>Actions</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var category in Model.Categories)
+            {
+                <tr>
+                    <td>@category.Name</td>
+                    <td>
+                        <a asp-page="./Edit" asp-route-id="@category.CategoryId" class="btn btn-warning btn-sm">Edit</a>
+                        <a asp-page="./Delete" asp-route-id="@category.CategoryId" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation" class="d-flex justify-content-center mt-4">
+        <ul class="pagination">
+            @if (Model.CurrentPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="?pageNumber=@(Model.CurrentPage - 1)">Previous</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled">
+                    <span class="page-link">Previous</span>
+                </li>
+            }
+
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(Model.CurrentPage == i ? "active" : "")">
+                    <a class="page-link" href="?pageNumber=@i">@i</a>
+                </li>
+            }
+
+            @if (Model.CurrentPage < Model.TotalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" href="?pageNumber=@(Model.CurrentPage + 1)">Next</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled">
+                    <span class="page-link">Next</span>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>
