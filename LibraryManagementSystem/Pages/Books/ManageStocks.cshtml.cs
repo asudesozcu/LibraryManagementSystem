@@ -17,7 +17,6 @@ namespace LibraryManagementSystem.Pages.Books
             _context = context;
         }
 
-        public List<Book> Books { get; set; } = new();
 
         [BindProperty]
         public int BookId { get; set; }
@@ -25,13 +24,26 @@ namespace LibraryManagementSystem.Pages.Books
         [BindProperty]
         public int NewStock { get; set; }
 
-        public async Task<IActionResult> OnGetAsync()
+        public IList<Book> Books { get; set; } = new List<Book>();
+        public int CurrentPage { get; set; }
+        public int TotalPages { get; set; }
+
+        public async Task OnGetAsync(int? pageNumber)
         {
-            Books = await _context.Books
-                .AsNoTracking()
-                .Include(b => b.Category)
-                .ToListAsync();
-            return Page();
+            var query = _context.Books
+                .Include(b => b.Category) // Include category relationships if needed
+                .AsQueryable();
+
+            // Pagination logic
+            int pageSize = 5; // Number of items per page
+            CurrentPage = pageNumber ?? 1; // Default to page 1 if no page number is provided
+            var totalItems = await query.CountAsync(); // Total number of books
+            TotalPages = (int)Math.Ceiling(totalItems / (double)pageSize); // Calculate total pages
+
+            // Fetch books for the current page
+            Books = await query.Skip((CurrentPage - 1) * pageSize)
+                               .Take(pageSize)
+                               .ToListAsync();
         }
 
         public async Task<IActionResult> OnPostUpdateStockAsync()
@@ -40,7 +52,7 @@ namespace LibraryManagementSystem.Pages.Books
             if (book == null)
             {
                 ModelState.AddModelError("", "Book not found.");
-                return await OnGetAsync();
+                return Page();
             }
 
             // Mevcut stok ve toplam stok güncellemesi
